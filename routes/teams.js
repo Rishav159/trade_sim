@@ -4,7 +4,14 @@ var Team = require('../models/team')
 var Commodity = require('../models/commodity')
 var path = require('path')
 /* GET users listing. */
-
+var auth  = function(req,res,next){
+  console.log(req.session.teamid);
+  if(req.session && req.session.teamid){
+    next()
+  }else{
+    res.redirect('/team/login')
+  }
+}
 var check_exist = function(id,callback){
   Team.findById(id,function(err,team){
     if(err){
@@ -15,8 +22,14 @@ var check_exist = function(id,callback){
   });
 }
 
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/',auth, function(req, res, next) {
+  Team.findById(req.session.teamid).populate('commodities').exec(function(err,team){
+    if(err){
+      console.log(err);
+      res.send(err)
+    }
+    res.send(team)
+  })
 });
 router.get('/signup',function(req,res,next){
   console.log("Signup Page Requested");
