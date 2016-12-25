@@ -7,7 +7,8 @@ var commSchema = new Schema({
   silver : {type : Number , default : 10},
   iron : {type : Number , default : 10},
   diamond : {type : Number , default : 10},
-  aluminium : {type : Number , default : 10}
+  aluminium : {type : Number , default : 10},
+  cash : {type : Number , default : 20000}
 },{ collection:'commodities'});
 
 

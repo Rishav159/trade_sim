@@ -6,9 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session')
 var mongoose = require('mongoose')
+
 var routes = require('./routes/index');
 var teams = require('./routes/teams');
-
+var proposal = require('./routes/proposal');
 var app = express();
 
 mongoose.connect('mongodb://localhost/trade_sim');
@@ -35,9 +36,10 @@ app.use(session({
 }))
 
 
-app.use('/', routes);
-app.use('/team', teams);
 
+app.use('/team', teams);
+app.use('/proposal',proposal)
+app.use('/', routes);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

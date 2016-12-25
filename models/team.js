@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 var teamSchema = new Schema({
   _id :String,
   password:String,
-  cash : {type:Number , default:1000},
   commodities : {type:Schema.Types.ObjectId , ref:'Commodity'}
 },{ collection:'teams'});
 

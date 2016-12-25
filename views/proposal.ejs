@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Proposal Create</title>
+  </head>
+  <body>
+    <form class="" action="/proposal/create" method="post">
+      To Team <input type="text" name="to" value=""><br>
+<% for(var key in commodity){
+  console.log(key)
+    console.log(commodity[key])
+      if(commodity.hasOwnProperty(key)){%>
+      Give <%=commodity[key]%> : <input type="Number" name="give_<%=commodity[key]%>" value=""><br>
+<% }
+} %>
+<% for(var key in commodity){
+      if(commodity.hasOwnProperty(key)){%>
+      Want <%=commodity[key]%> : <input type="Number" name="want_<%=commodity[key]%>" value=""><br>
+<% }
+} %>
+      <input type="submit" name="name" value="Submit">
+    </form>
+  </body>
+</html>
