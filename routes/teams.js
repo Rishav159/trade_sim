@@ -23,13 +23,7 @@ var check_exist = function(id,callback){
 }
 
 router.get('/',auth, function(req, res, next) {
-  Team.findById(req.session.teamid).populate('commodities').exec(function(err,team){
-    if(err){
-      console.log(err);
-      res.send(err)
-    }
-    res.send(team)
-  })
+  res.redirect('/dashboard')
 });
 router.get('/signup',function(req,res,next){
   console.log("Signup Page Requested");
