@@ -6,7 +6,6 @@ var commodity_list = require('../models/commoditylist')
 var mongoose = require('mongoose');
 /* GET home page. */
 var auth  = function(req,res,next){
-  console.log(req.session.teamid);
   if(req.session && req.session.teamid){
     next()
   }else{
@@ -33,9 +32,6 @@ var validate = function(hasobj,reqobj){
   for(var i=0;i<commodity_list.length;i++){
     key = commodity_list[i]
     if(reqobj[key] > hasobj[key]){
-      console.log(reqobj[key]);
-      console.log( " > ");
-      console.log(hasobj[key]);
       return false
     }
   }
@@ -86,7 +82,6 @@ router.post('/create',auth, function(req, res, next) {
 });
 
 router.get('/:proposal_id/accept',auth,function(req,res,next){
-  console.log(req.session);
   Team.findById(req.session.teamid,function(err,to_team){
     if(err){
       console.log(err);
@@ -101,6 +96,7 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
         res.send("There is no such proposal")
       }
       if(proposal.to != req.session.teamid){
+        console.log(proposal.to);
         res.send("This Proposal is not for you !")
       }
       Team.findById(proposal.by,function(err,from_team){
@@ -116,26 +112,31 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
             }
             for(var i=0;i<commodity_list.length;i++){
               comm = commodity_list[i]
-              console.log("Chaning "+comm);
-              to_comm[comm] = to_comm[comm] - want_comm[comm]
-              by_comm[comm] = by_comm[comm] + want_comm[comm]
-              to_comm[comm] = to_comm[comm] + give_comm[comm]
-              by_comm[comm] = by_comm[comm] - give_comm[comm]
+              to_comm[comm] = parseInt(to_comm[comm]) - parseInt(want_comm[comm])
+              by_comm[comm] = parseInt(by_comm[comm]) + parseInt(want_comm[comm])
+              to_comm[comm] = parseInt(to_comm[comm]) + parseInt(give_comm[comm])
+              by_comm[comm] = parseInt(by_comm[comm]) - parseInt(give_comm[comm])
             }
             to_team.commodities = to_comm
             from_team.commodities = by_comm
-            to_team.save(function(err,to_team){
+            to_team_id = to_team._id
+            from_team_id = from_team._id
+            delete to_team._id
+            delete from_team._id
+            Team.findOneAndUpdate({_id:to_team_id},to_team,function(err,to_team){
               if(err){
                 console.log(err);
                 res.send(err)
+              }else{
+                Team.findOneAndUpdate({_id:from_team_id},from_team,function(err,from_team){
+                  if(err){
+                    console.log(err);
+                    res.send(err)
+                  }else{
+                    res.redirect('/dashboard')
+                  }
+                })
               }
-              from_team.save(function(err,from_team){
-                if(err){
-                  console.log(err);
-                  res.send(err)
-                }
-                res.send("Proposal Succesfully Accepted")
-              })
             })
           })
         }else{
