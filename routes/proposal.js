@@ -87,62 +87,95 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
       console.log(err);
       res.send(err);
     }
-    Proposal.findOne({_id : req.params.proposal_id},function(err,proposal){
+    Proposal.findOne({_id : req.params.proposal_id,valid:true},function(err,proposal){
       if(err){
         console.log(err);
         res.send(err)
       }
       if(!proposal){
         res.send("There is no such proposal")
-      }
-      if(proposal.to != req.session.teamid){
-        console.log(proposal.to);
-        res.send("This Proposal is not for you !")
-      }
-      Team.findById(proposal.by,function(err,from_team){
-        to_comm = to_team.commodities;
-        want_comm = proposal.want_commodities;
-        give_comm = proposal.give_commodities;
-        by_comm = from_team.commodities;
-        if(validate(to_comm,want_comm) && validate(by_comm,give_comm)){
-          Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
-            if(err){
-              console.log(err);
-              res.send(err)
-            }
-            for(var i=0;i<commodity_list.length;i++){
-              comm = commodity_list[i]
-              to_comm[comm] = parseInt(to_comm[comm]) - parseInt(want_comm[comm])
-              by_comm[comm] = parseInt(by_comm[comm]) + parseInt(want_comm[comm])
-              to_comm[comm] = parseInt(to_comm[comm]) + parseInt(give_comm[comm])
-              by_comm[comm] = parseInt(by_comm[comm]) - parseInt(give_comm[comm])
-            }
-            to_team.commodities = to_comm
-            from_team.commodities = by_comm
-            to_team_id = to_team._id
-            from_team_id = from_team._id
-            delete to_team._id
-            delete from_team._id
-            Team.findOneAndUpdate({_id:to_team_id},to_team,function(err,to_team){
-              if(err){
-                console.log(err);
-                res.send(err)
-              }else{
-                Team.findOneAndUpdate({_id:from_team_id},from_team,function(err,from_team){
+      }else{
+        if(proposal.to != req.session.teamid){
+          console.log(proposal.to);
+          res.send("This Proposal is not for you !")
+        }else{
+          Team.findById(proposal.by,function(err,from_team){
+            to_comm = to_team.commodities;
+            want_comm = proposal.want_commodities;
+            give_comm = proposal.give_commodities;
+            by_comm = from_team.commodities;
+            if(validate(to_comm,want_comm) && validate(by_comm,give_comm)){
+              Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
+                if(err){
+                  console.log(err);
+                  res.send(err)
+                }
+                for(var i=0;i<commodity_list.length;i++){
+                  comm = commodity_list[i]
+                  to_comm[comm] = parseInt(to_comm[comm]) - parseInt(want_comm[comm])
+                  by_comm[comm] = parseInt(by_comm[comm]) + parseInt(want_comm[comm])
+                  to_comm[comm] = parseInt(to_comm[comm]) + parseInt(give_comm[comm])
+                  by_comm[comm] = parseInt(by_comm[comm]) - parseInt(give_comm[comm])
+                }
+                to_team.commodities = to_comm
+                from_team.commodities = by_comm
+                to_team_id = to_team._id
+                from_team_id = from_team._id
+                delete to_team._id
+                delete from_team._id
+                Team.findOneAndUpdate({_id:to_team_id},to_team,function(err,to_team){
                   if(err){
                     console.log(err);
                     res.send(err)
                   }else{
-                    res.redirect('/dashboard')
+                    Team.findOneAndUpdate({_id:from_team_id},from_team,function(err,from_team){
+                      if(err){
+                        console.log(err);
+                        res.send(err)
+                      }else{
+                        res.redirect('/dashboard')
+                      }
+                    })
                   }
                 })
-              }
-            })
+              })
+            }else{
+              res.send("You dont have that much or requester doesnt have that much")
+            }
           })
-        }else{
-          res.send("You dont have that much or requester doesnt have that much")
         }
-      })
+      }
+    });
+  });
+});
+
+router.get('/:proposal_id/reject',function(req,res,next){
+  Team.findById(req.session.teamid,function(err,to_team){
+    if(err){
+      console.log(err);
+      res.send(err);
+    }
+    Proposal.findOne({_id : req.params.proposal_id,valid:true},function(err,proposal){
+      if(err){
+        console.log(err);
+        res.send(err)
+      }
+      if(!proposal){
+        res.send("Done")
+      }else{
+        if(proposal.to!=req.session.teamid){
+          res.send("This proposal isn't for you")
+        }else{
+          Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
+            if(err){
+              console.log(err);
+              res.send(err)
+            }else{
+              res.send("Done")
+            }
+          })
+        }
+      }
     });
   });
 });
