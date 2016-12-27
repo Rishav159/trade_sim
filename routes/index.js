@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Commodity = require('../models/commodity')
+var commodity_list = require('../models/commoditylist')
 var Team = require('../models/team')
 /* GET home page. */
 var auth  = function(req,res,next){
@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/dashboard',auth,function(req,res,next){
   console.log("Dashboard Get request ");
-  Team.findById(req.session.teamid).populate('commodities').exec(function(err,team){
+  Team.findById(req.session.teamid,function(err,team){
     if(err){
       console.log(err);
       res.send(err)

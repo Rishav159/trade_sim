@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 var propSchema = new Schema({
   by : {type:String , ref:'Team'},
   to : {type:String , ref:'Team'},
-  give_commodities : {type:Schema.Types.ObjectId , ref:'Commodity'},
-  want_commodities : {type:Schema.Types.ObjectId , ref:'Commodity'},
+  give_commodities : Schema.Types.Mixed,
+  want_commodities : Schema.Types.Mixed,
   valid : {type: Boolean , default : true}
 },{ collection:'proposals'});
 

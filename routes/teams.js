@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var Team = require('../models/team')
-var Commodity = require('../models/commodity')
+
 var path = require('path')
+var commodity_list = require('../models/commoditylist')
 /* GET users listing. */
 var auth  = function(req,res,next){
   console.log(req.session.teamid);
@@ -39,25 +40,21 @@ router.post('/signup',function(req,res,next){
     if(team){
       res.send("Team already exists");
     }else{
-      var comm = new Commodity();
-      console.log(comm);
-      comm.save(function(err,commodity){
+      var new_team = new Team({
+        _id : req.body.id,
+        password : req.body.password,
+        commodities : {}
+      });
+      for(var i=0;i<commodity_list.length;i++){
+        new_team.commodities[commodity_list[i]] = 10
+      }
+      new_team.commodities['cash'] = 1000
+      new_team.save(function(err,team){
         if(err){
           console.log(err);
           res.send(err)
         }
-        var team = new Team({
-          _id : req.body.id,
-          password : req.body.password,
-          commodities : commodity._id
-        });
-        team.save(function(err,team){
-          if(err){
-            console.log(err);
-            res.send(err)
-          }
-          res.send("Team succesfully Signed Up")
-        })
+        res.send("Team succesfully Signed Up")
       })
     }
   })

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var teamSchema = new Schema({
   _id :String,
   password:String,
-  commodities : {type:Schema.Types.ObjectId , ref:'Commodity'}
+  commodities : Schema.Types.Mixed
 },{ collection:'teams'});
 
 

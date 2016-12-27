@@ -1,4 +1,4 @@
-module.exports = [
+list = [
   'cash',
   'iron',
   'gold',
@@ -6,4 +6,6 @@ module.exports = [
   'silver',
   'diamond',
   'cotton'
-]
+];
+
+module.exports = list
