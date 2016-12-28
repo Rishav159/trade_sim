@@ -1,11 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
 // create a schema
 var teamSchema = new Schema({
   _id :String,
   password:String,
-  commodities : Schema.Types.Mixed
+  commodities : Schema.Types.Mixed,
+  sets : {
+    type : [Number],
+    default : [0,0,0]
+  }
 },{ collection:'teams'});
 
 

@@ -10,6 +10,7 @@ var mongoose = require('mongoose')
 var routes = require('./routes/index');
 var teams = require('./routes/teams');
 var proposal = require('./routes/proposal');
+var sets = require('./routes/sets')
 var app = express();
 
 mongoose.connect('mongodb://localhost/trade_sim');
@@ -38,7 +39,8 @@ app.use(session({
 
 
 app.use('/team', teams);
-app.use('/proposal',proposal)
+app.use('/proposal',proposal);
+app.use('/sets',sets)
 app.use('/', routes);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
