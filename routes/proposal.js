@@ -3,6 +3,7 @@ var router = express.Router();
 var Team = require('../models/team')
 var Proposal = require('../models/proposal')
 var commodity_list = require('../models/commodity').list
+var base_prices = require('../models/commodity').base_prices
 var get_net_worth = require('../models/commodity').get_net_worth
 var mongoose = require('mongoose');
 /* GET home page. */
@@ -13,8 +14,29 @@ var auth  = function(req,res,next){
     res.redirect('/team/login')
   }
 }
-
 router.get('/',auth,function(req,res,next){
+  var render_data = {}
+  Team.findById(req.session.teamid,function(err,team){
+    if(err){
+      console.log(err);
+      res.send(err)
+    }else{
+      render_data.team = team
+      render_data.commodity_list = commodity_list
+      render_data.base_prices = base_prices
+      Proposal.find({to:req.session.teamid,valid:true},function(err,proposals){
+        if(err){
+          console.log(err);
+          res.send(err);
+        }else{
+          render_data.proposals = proposals
+          res.render('proposal',render_data)
+        }
+      });
+    }
+  });
+});
+router.get('/create',auth,function(req,res,next){
   var render_data = {}
   render_data.commodity = commodity_list
   res.render('proposal',render_data)

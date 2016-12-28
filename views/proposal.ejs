@@ -63,56 +63,67 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4">
+									<% for(var i=0;i<proposals.length;i++){
+										proposal = proposals[i]%>
+										<div class="col-md-6">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Email Statistics</h4>
-                                <p class="category">Last Campaign Performance</p>
+                                <h4 class="title">Trade Request from <%=proposal.by%></h4>
                             </div>
                             <div class="content">
-                                <div id="commodity_chart" class="ct-chart ct-perfect-fourth"></div>
+                                <div class="row">
+																	<div class="col-md-6">
+																		<h6>You give</h6>
+																		<table class="table table-hover table-striped">
+																			<thead>
+																				<th>Commodity</th>
+																				<th>Quantity</th>
+																			</thead>
+																			<tbody>
+																				<%for(var i = 0;i<commodity_list.length;i++){
+																					commodity = commodity_list[i]%>
+																					<tr>
+																						<td><%= commodity.toUpperCase()%></td>
+																						<td><%= proposal.give_commodities[commodity]%></td>
+																					</tr>
+																				<%}%>
+																			</tbody>
+																		</table>
+																		<center>
+																			<a href="/proposal/<%=proposal._id%>/accept">
+																				<button type="button" class='btn btn-success'>Accept</button>
+																			</a>
+																		</center>
+																	</div>
+																	<div class="col-md-6">
+																		<h6>You receive</h6>
+																		<table class="table table-hover table-striped">
+																			<thead>
+																				<th>Commodity</th>
+																				<th>Quantity</th>
+																			</thead>
+																			<tbody>
+																				<%for(var i = 0;i<commodity_list.length;i++){
+																					commodity = commodity_list[i]%>
+																					<tr>
+																						<td><%= commodity.toUpperCase()%></td>
+																						<td><%= proposal.want_commodities[commodity]%></td>
+																					</tr>
+																				<%}%>
+																			</tbody>
+																		</table>
+																		<center>
+																			<a href="/proposal/<%=proposal._id%>/reject">
+																				<button type="button" class='btn btn-danger'>Reject</button>
+																			</a>
+																	</center>
+																	</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="header">
-															<h4 class="title">Treasury</h4>
-															<p class="category">Current Stock</p>
-                            </div>
-                            <div class="content">
-															<table class="table table-hover table-striped">
-																	<thead>
-																		<th>Commodity</th>
-																		<th>Quantity</th>
-																		<th>Base Price</th>
-																		<th>Amount</th>
-																	</thead>
-																	<tbody>
-																	<%var series = [],colist = []
-																	for(var i = 0;i<commodity_list.length;i++){
-																		commodity = commodity_list[i]
-																		series.push(team.commodities[commodity]*base_prices[commodity])
-																		if(commodity!='cash'){%>
-																		<tr>
-																			<td><%= commodity.toUpperCase()%></td>
-																			<td><%= team.commodities[commodity]%></td>
-																			<td><%= base_prices[commodity]%></td>
-																			<td><%= base_prices[commodity]*team.commodities[commodity]%></td>
-																		</tr>
-																	<%}}%>
-																	<tr>
-																		<td></td><td></td><td>Net Worth</td>
-																		<td><%= team.net_worth %></td>
-																	</tr>
-																	</tbody>
-															</table>
-                            </div>
-                        </div>
-                    </div>
+									<%}%>
                 </div>
-
             </div>
         </div>
 
@@ -147,25 +158,7 @@
 	<script src="assets/js/demo.js"></script>
 
 	<script type="text/javascript">
-    	$(document).ready(function(){
-				var comm_list = []
-				<% for(var i=0;i<commodity_list.length ; i++){ %>
-					comm_list.push('<%=commodity_list[i]%>')
-				<%}%>
-        	Chartist.Pie('#commodity_chart',{
-						labels:comm_list,
-						series:[<%=series%>]
-					},{
-						donut: false ,
-            donutWidth: 40,
-            startAngle: 0,
-            total: <%=team.net_worth%> ,
-            // showLabel: false,
-            // axisX: {
-            //     showGrid: false
-            // }
-					})
-    	});
+
 	</script>
 </body>
 </html>
