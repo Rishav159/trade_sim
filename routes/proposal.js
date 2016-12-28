@@ -49,13 +49,32 @@ var get_comm = function(obj,s){
   }
   return comm
 }
+var validate_commodity = function(commodities){
+  allzero = true
+  for(var i=0;i<commodity_list.length;i++){
+    key = commodity_list[i];
+    if(commodities[key]>0){
+      allzero=false
+    }
+    if(commodities[key]<0){
+      return false
+    }
+  }
+  if(allzero){
+    return false
+  }else{
+    return true
+  }
+}
 router.post('/create',auth, function(req, res, next) {
   if(!req.body.to){
     res.send("Not Enough Information Given")
   }
   give_comm = get_comm(req.body,'give');
   want_comm = get_comm(req.body,'want');
-
+  if(!validate_commodity(give_comm) || !validate_commodity(want_comm)){
+    res.send("Invalid Proposal")
+  }
   Team.findById(req.session.teamid,function(err,from_team){
     if(err){
       console.log(err);
