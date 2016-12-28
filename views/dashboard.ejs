@@ -133,6 +133,7 @@
 
 	<!--  Charts Plugin -->
 	<script src="assets/js/chartist.min.js"></script>
+		<script src="assets/js/chartist-plugin-legend.js"></script>
 
     <!--  Notifications Plugin    -->
     <script src="assets/js/bootstrap-notify.js"></script>
@@ -173,11 +174,10 @@
 						donut: false ,
             donutWidth: 40,
             startAngle: 0,
-            total: <%=team.net_worth%> ,
-            // showLabel: false,
-            // axisX: {
-            //     showGrid: false
-            // }
+            // total: <%=team.net_worth%> ,
+            // plugins = [
+						// 	Chartist.plugins.legend()
+						// ]
 					})
 					if(getUrlParameter('error') && getUrlParameter('msg')){
 						$.notify({

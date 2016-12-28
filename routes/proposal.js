@@ -158,7 +158,7 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
             give_comm = proposal.give_commodities;
             by_comm = from_team.commodities;
             if(validate(to_comm,want_comm) && validate(by_comm,give_comm)){
-              Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
+              Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false,'status':'Accepted'}},function(err,proposal){
                 if(err){
                   console.log(err);
                   res.redirect('/proposal?error=true&msg='+'Unexpected Error')
@@ -221,7 +221,7 @@ router.get('/:proposal_id/reject',function(req,res,next){
         if(proposal.to!=req.session.teamid){
           res.redirect('/proposal?error=true&msg='+'This request is not for you !')
         }else{
-          Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
+          Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false,'status':'Rejected'}},function(err,proposal){
             if(err){
               console.log(err);
               res.redirect('/proposal?error=true&msg='+'Unexpected Error')
