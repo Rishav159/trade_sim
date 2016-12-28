@@ -26,6 +26,12 @@ var check_exist = function(id,callback){
 router.get('/',auth, function(req, res, next) {
   res.redirect('/dashboard')
 });
+router.get('/logout',function(req,res,next){
+  if(req.session){
+    delete req.session['teamid']
+  }
+  res.redirect('/team/login')
+})
 router.get('/signup',function(req,res,next){
   console.log("Signup Page Requested");
   res.sendFile(path.join(__dirname, '../public/signup.html'));

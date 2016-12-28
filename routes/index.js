@@ -26,4 +26,9 @@ router.get('/dashboard',auth,function(req,res,next){
     res.send(team)
   })
 })
+router.get('/leaderboards',function(req,res,next){
+  Team.find({},{$sort:'commodities.cash'},function(err,teams){
+    res.send(teams)
+  });
+})
 module.exports = router;
