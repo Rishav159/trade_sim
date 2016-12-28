@@ -87,7 +87,7 @@ router.post('/login',function(req,res){
 			else{
         if(team.password == req.body.password){
           req.session.teamid = team._id
-          res.redirect('/proposal')
+          res.redirect('/dashboard')
         }else{
           res.send("Wrong Password")
         }

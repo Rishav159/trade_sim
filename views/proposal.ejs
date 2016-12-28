@@ -63,7 +63,9 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-									<% for(var i=0;i<proposals.length;i++){
+
+									<% if(proposals.length >0){
+										for(var i=0;i<proposals.length;i++){
 										proposal = proposals[i]%>
 										<div class="col-md-6">
                         <div class="card">
@@ -122,6 +124,19 @@
                             </div>
                         </div>
                     </div>
+									<%}}else{%>
+										<div class="col-md-6">
+											<div class="card">
+												<div class="header">
+													Proposals
+												</div>
+												<div class="content">
+													<p>
+														You don't have any pending requests
+													</p>
+												</div>
+											</div>
+										</div>
 									<%}%>
                 </div>
             </div>
