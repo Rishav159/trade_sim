@@ -5,7 +5,7 @@
 	<link rel="icon" type="image/png" href="../assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Trade Simulator Proposals</title>
+	<title>Trade Simulator Sets</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -45,7 +45,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/proposal">Proposals</a>
+                    <a class="navbar-brand" href="/proposal">Sets</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -63,66 +63,49 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-									<% for(var i=0;i<proposals.length;i++){
-										proposal = proposals[i]%>
-										<div class="col-md-6">
+                  <%
+                  for(var i=0;i<sets.length;i++){
+                    set = sets[i]; %>
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Trade Request from <%=proposal.by%></h4>
+                                <h4 class="title">Set <%=i+1%></h4>
                             </div>
                             <div class="content">
-                                <div class="row">
-																	<div class="col-md-6">
-																		<h6>You give</h6>
-																		<table class="table table-hover table-striped">
-																			<thead>
-																				<th>Commodity</th>
-																				<th>Quantity</th>
-																			</thead>
-																			<tbody>
-																				<%for(var i = 0;i<commodity_list.length;i++){
-																					commodity = commodity_list[i]%>
-																					<tr>
-																						<td><%= commodity.toUpperCase()%></td>
-																						<td><%= proposal.give_commodities[commodity]%></td>
-																					</tr>
-																				<%}%>
-																			</tbody>
-																		</table>
-																		<center>
-																			<a href="/proposal/<%=proposal._id%>/accept">
-																				<button type="button" class='btn btn-success btn-fill'>Accept</button>
-																			</a>
-																		</center>
-																	</div>
-																	<div class="col-md-6">
-																		<h6>You receive</h6>
-																		<table class="table table-hover table-striped">
-																			<thead>
-																				<th>Commodity</th>
-																				<th>Quantity</th>
-																			</thead>
-																			<tbody>
-																				<%for(var i = 0;i<commodity_list.length;i++){
-																					commodity = commodity_list[i]%>
-																					<tr>
-																						<td><%= commodity.toUpperCase()%></td>
-																						<td><%= proposal.want_commodities[commodity]%></td>
-																					</tr>
-																				<%}%>
-																			</tbody>
-																		</table>
-																		<center>
-																			<a href="/proposal/<%=proposal._id%>/reject">
-																				<button type="button" class='btn btn-danger btn-fill'>Reject</button>
-																			</a>
-																	</center>
-																	</div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <table class="table table-hover table-striped">
+                                    <thead>
+                                      <th>Commodity</th>
+                                      <th>Quantity</th>
+                                    </thead>
+                                    <tbody>
+                                      <%for(var j = 0;j<commodity_list.length;j++){
+                                        commodity = commodity_list[j];
+                                        if(commodity!='cash'){%>
+                                        <tr>
+                                          <td><%= commodity.toUpperCase()%></td>
+                                          <td><%= set[commodity]%></td>
+                                        </tr>
+                                      <%}}%>
+                                    </tbody>
+                                  </table>
                                 </div>
+                              </div>
+                              <div class="footer">
+                                <p>
+                                  Submitted : <%=team.sets[i]%>
+                                </p>
+                                <center>
+                                  <a href="/sets/<%=i+1%>/submit">
+                                    <button type="button" class='btn btn-fill btn-primary'>Submit</button>
+                                  </a>
+                                </center>
+                              </div>
                             </div>
                         </div>
                     </div>
-									<%}%>
+                  <%}%>
                 </div>
             </div>
         </div>

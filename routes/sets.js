@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var commodity_list = require('../models/commodity').list
+var base_prices = require('../models/commodity').base_prices
 var get_net_worth = require('../models/commodity').get_net_worth
 var Team = require('../models/team')
 var sets = require('../models/sets')
@@ -23,8 +24,20 @@ var validate = function(hasobj,reqobj){
   return true
 }
 
-router.get('/', function(req, res, next) {
-  res.send(sets)
+router.get('/', auth,function(req, res, next) {
+  render_data = {}
+  render_data.commodity_list = commodity_list
+  render_data.base_prices = base_prices
+  Team.findById(req.session.teamid,function(err,team){
+    if(err){
+      console.log(err);
+      res.send(err)
+    }else{
+      render_data.team = team
+      render_data.sets = sets
+      res.render('sets',render_data)
+    }
+  });
 });
 
 router.get('/:id/submit',auth,function(req,res,next){

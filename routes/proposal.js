@@ -39,7 +39,18 @@ router.get('/',auth,function(req,res,next){
 router.get('/create',auth,function(req,res,next){
   var render_data = {}
   render_data.commodity = commodity_list
-  res.render('proposal',render_data)
+  Team.find({},function(err,teams){
+    if(err){
+      console.log(err);
+      res.send(err)
+    }else{
+      render_data.teams = teams
+      render_data.team = {}
+      render_data.team._id = req.session.teamid
+      render_data.commodity_list = commodity_list
+      res.render('new_proposal',render_data)
+    }
+  })
 });
 router.get('/get/:proposal_id',auth,function(req,res,next){
   Proposal.findById(req.params.proposal_id,function(err,proposal){
