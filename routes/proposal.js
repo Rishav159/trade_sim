@@ -19,7 +19,7 @@ router.get('/',auth,function(req,res,next){
   Team.findById(req.session.teamid,function(err,team){
     if(err){
       console.log(err);
-      res.send(err)
+      res.redirect('/proposal?error=true&msg='+'Unexpected Error')
     }else{
       render_data.team = team
       render_data.commodity_list = commodity_list
@@ -27,7 +27,7 @@ router.get('/',auth,function(req,res,next){
       Proposal.find({to:req.session.teamid,valid:true},function(err,proposals){
         if(err){
           console.log(err);
-          res.send(err);
+          res.redirect('/proposal?error=true&msg='+'Unexpected Error')
         }else{
           render_data.proposals = proposals
           res.render('proposal',render_data)
@@ -42,7 +42,7 @@ router.get('/create',auth,function(req,res,next){
   Team.find({},function(err,teams){
     if(err){
       console.log(err);
-      res.send(err)
+      res.redirect('/proposal/create?error=true&msg='+'Unexpected Error')
     }else{
       render_data.teams = teams
       render_data.team = {}
@@ -102,17 +102,17 @@ var validate_commodity = function(commodities){
 }
 router.post('/create',auth, function(req, res, next) {
   if(!req.body.to){
-    res.send("Not Enough Information Given")
+    res.redirect('/proposal/create?error=true&msg='+'Not Enough Information Given')
   }
   give_comm = get_comm(req.body,'give');
   want_comm = get_comm(req.body,'want');
   if(!validate_commodity(give_comm) || !validate_commodity(want_comm)){
-    res.send("Invalid Proposal")
+    res.redirect('/proposal/create?error=true&msg='+'Invalid Proposal')
   }
   Team.findById(req.session.teamid,function(err,from_team){
     if(err){
       console.log(err);
-      res.send(err)
+      res.redirect('/proposal/create?error=true&msg='+'Unexpected Error')
     }
     if(validate(from_team.commodities , give_comm)){
       proposal = new Proposal({
@@ -124,12 +124,12 @@ router.post('/create',auth, function(req, res, next) {
       proposal.save(function(err,proposal){
         if(err){
           console.log(err);
-          res.send(err)
+          res.redirect('/proposal/create?error=true&msg='+'Unexpected Error')
         }
-        res.send(proposal)
+        res.redirect('/dashboard?msg='+'Proposal sent');
       })
     }else{
-      res.send("You dont have that much")
+      res.redirect('/proposal/create?error=true&msg='+'You do not have the required stock to make that request')
     }
   });
 });
@@ -138,19 +138,19 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
   Team.findById(req.session.teamid,function(err,to_team){
     if(err){
       console.log(err);
-      res.send(err);
+      res.redirect('/proposal?error=true&msg='+'Unexpected Error')
     }
     Proposal.findOne({_id : req.params.proposal_id,valid:true},function(err,proposal){
       if(err){
         console.log(err);
-        res.send(err)
+        res.redirect('/proposal?error=true&msg='+'Unexpected Error')
       }
       if(!proposal){
-        res.send("There is no such proposal")
+        res.redirect('/proposal?error=true&msg='+'This Proposal does not exist !')
       }else{
         if(proposal.to != req.session.teamid){
           console.log(proposal.to);
-          res.send("This Proposal is not for you !")
+          res.redirect('/proposal?error=true&msg='+'This Proposal is not for you !')
         }else{
           Team.findById(proposal.by,function(err,from_team){
             to_comm = to_team.commodities;
@@ -161,7 +161,7 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
               Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
                 if(err){
                   console.log(err);
-                  res.send(err)
+                  res.redirect('/proposal?error=true&msg='+'Unexpected Error')
                 }
                 for(var i=0;i<commodity_list.length;i++){
                   comm = commodity_list[i]
@@ -181,14 +181,14 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
                 Team.findOneAndUpdate({_id:to_team_id},to_team,function(err,to_team){
                   if(err){
                     console.log(err);
-                    res.send(err)
+                    res.redirect('/proposal?error=true&msg='+'Unexpected Error')
                   }else{
                     Team.findOneAndUpdate({_id:from_team_id},from_team,function(err,from_team){
                       if(err){
                         console.log(err);
-                        res.send(err)
+                        res.redirect('/proposal?error=true&msg='+'Unexpected Error')
                       }else{
-                        res.redirect('/dashboard')
+                        res.redirect('/dashboard?msg='+'Requested Accepted')
                       }
                     })
                   }
@@ -208,25 +208,25 @@ router.get('/:proposal_id/reject',function(req,res,next){
   Team.findById(req.session.teamid,function(err,to_team){
     if(err){
       console.log(err);
-      res.send(err);
+      res.redirect('/proposal?error=true&msg='+'Unexpected Error')
     }
     Proposal.findOne({_id : req.params.proposal_id,valid:true},function(err,proposal){
       if(err){
         console.log(err);
-        res.send(err)
+      res.redirect('/proposal?error=true&msg='+'Unexpected Error')
       }
       if(!proposal){
-        res.send("Done")
+        res.redirect('/proposal?msg='+'Requested Rejected')
       }else{
         if(proposal.to!=req.session.teamid){
-          res.send("This proposal isn't for you")
+          res.redirect('/proposal?error=true&msg='+'This request is not for you !')
         }else{
           Proposal.findOneAndUpdate({'_id' : proposal._id},{$set:{'valid' : false}},function(err,proposal){
             if(err){
               console.log(err);
-              res.send(err)
+              res.redirect('/proposal?error=true&msg='+'Unexpected Error')
             }else{
-              res.send("Done")
+              res.redirect('/proposal?msg='+'Requested Rejected')
             }
           })
         }

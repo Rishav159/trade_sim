@@ -31,7 +31,7 @@ router.get('/', auth,function(req, res, next) {
   Team.findById(req.session.teamid,function(err,team){
     if(err){
       console.log(err);
-      res.send(err)
+      res.redirect('/sets?error=true&msg='+'Unexpected Error')
     }else{
       render_data.team = team
       render_data.sets = sets
@@ -44,12 +44,12 @@ router.get('/:id/submit',auth,function(req,res,next){
   Team.findById(req.session.teamid,function(err,team){
     if(err){
       console.log(err);
-      res.send(err)
+      res.redirect('/sets?error=true&msg='+'Unexpected Error')
     }else{
       has_comm = team.commodities
       submit_comm = sets[req.params.id - 1]
       if(!validate(has_comm,submit_comm)){
-        res.send("You do not have that much to submit")
+        res.redirect('/sets?error=true&msg='+'You do not have that much to submit')
       }else{
         for(var i=0;i<commodity_list.length;i++){
           comm = commodity_list[i]
@@ -63,9 +63,9 @@ router.get('/:id/submit',auth,function(req,res,next){
         Team.findOneAndUpdate({_id : teamid},team,function(err,team){
           if(err){
             console.log(err);
-            res.send(err);
+            res.redirect('/sets?error=true&msg='+'Unexpected Error')
           }else{
-            res.redirect('/dashboard')
+            res.redirect('/sets?msg='+'Submitted successfully')
           }
         })
       }
