@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var commodity_list = require('../models/commoditylist')
+var commodity_list = require('../models/commodity').list
+var get_net_worth = require('../models/commodity').get_net_worth
 var Team = require('../models/team')
 var sets = require('../models/sets')
 /* GET home page. */
@@ -42,6 +43,7 @@ router.get('/:id/submit',auth,function(req,res,next){
           has_comm[comm] = has_comm[comm] - submit_comm[comm]
         }
         team.commodities = has_comm
+        team.net_worth = get_net_worth(has_comm)
         team.sets[req.params.id - 1]  = team.sets[req.params.id - 1] + 1
         teamid = team._id
         delete team._id

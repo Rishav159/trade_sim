@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var Team = require('../models/team')
 var Proposal = require('../models/proposal')
-var commodity_list = require('../models/commoditylist')
+var commodity_list = require('../models/commodity').list
+var get_net_worth = require('../models/commodity').get_net_worth
 var mongoose = require('mongoose');
 /* GET home page. */
 var auth  = function(req,res,next){
@@ -138,6 +139,8 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
                 }
                 to_team.commodities = to_comm
                 from_team.commodities = by_comm
+                to_team.net_worth = get_net_worth(to_comm)
+                from_team.net_worth = get_net_worth(by_comm)
                 to_team_id = to_team._id
                 from_team_id = from_team._id
                 delete to_team._id

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var commodity_list = require('../models/commoditylist')
+var commodity_list = require('../models/commodity').list
 var Team = require('../models/team')
 /* GET home page. */
 var auth  = function(req,res,next){
@@ -27,8 +27,13 @@ router.get('/dashboard',auth,function(req,res,next){
   })
 })
 router.get('/leaderboards',function(req,res,next){
-  Team.find({},{$sort:'commodities.cash'},function(err,teams){
-    res.send(teams)
+  Team.find().sort([['sets',-1],['net_worth', -1]]).exec(function(err,teams){
+    if(err){
+      console.log(err);
+      res.send(err)
+    }else{
+      res.send(teams)
+    }
   });
 })
 module.exports = router;

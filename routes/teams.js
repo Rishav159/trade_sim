@@ -3,7 +3,7 @@ var router = express.Router();
 var Team = require('../models/team')
 
 var path = require('path')
-var commodity_list = require('../models/commoditylist')
+var commodity_list = require('../models/commodity').list
 /* GET users listing. */
 var auth  = function(req,res,next){
   console.log(req.session.teamid);
