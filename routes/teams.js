@@ -32,10 +32,6 @@ router.get('/logout',function(req,res,next){
   }
   res.redirect('/team/login')
 })
-router.get('/signup',function(req,res,next){
-  console.log("Signup Page Requested");
-  res.sendFile(path.join(__dirname, '../public/signup.html'));
-});
 
 router.post('/signup',function(req,res,next){
   console.log("A team is trying to register");
@@ -69,7 +65,7 @@ router.post('/signup',function(req,res,next){
 
 router.get('/login',function(req,res,next){
   console.log("Login Page Requested");
-	res.sendFile(path.join(__dirname, '../public/login.html'));
+	res.sendFile(path.join(__dirname, '../public/signup.html'));
 });
 router.post('/login',function(req,res){
 	console.log("A team is trying to login");

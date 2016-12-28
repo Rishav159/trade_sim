@@ -14,7 +14,7 @@ var auth  = function(req,res,next){
   }
 }
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.redirect('/team/login');
 });
 
 router.get('/dashboard',auth,function(req,res,next){
