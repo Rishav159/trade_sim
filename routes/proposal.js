@@ -195,7 +195,7 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
                 })
               })
             }else{
-              res.send("You dont have that much or requester doesnt have that much")
+              res.redirect("/proposal?error=true&msg="+"You dont have that much or requester doesnt have that much")
             }
           })
         }
