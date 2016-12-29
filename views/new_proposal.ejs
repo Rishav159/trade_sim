@@ -77,7 +77,8 @@
                                         <select class="form-control" name="to">
                                           <% for(var i=0;i<teams.length;i++){
                                             curr_team = teams[i];
-                                            if(curr_team._id!=team._id){%>
+																						console.log(curr_team)
+                                            if(curr_team._id!=team._id && curr_team._id!=='government'){%>
                                           <option value="<%=curr_team._id%>"><%=curr_team._id%></option>
                                           <% } }%>
                                         </select>

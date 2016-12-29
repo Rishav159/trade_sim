@@ -12,7 +12,8 @@ var teams = require('./routes/teams');
 var proposal = require('./routes/proposal');
 var sets = require('./routes/sets')
 var app = express();
-
+var Team = require('./models/team')
+var commodity_list = require('./models/commodity')['list']
 mongoose.connect('mongodb://localhost/trade_sim');
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -73,5 +74,29 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
+Team.findById('government',function(err,team){
+  if(err){
+    console.log(err);
+  }else{
+    if(!team){
+      var gov = new Team({
+        _id : 'government',
+        password : 'admin',
+        commodities : {}
+      });
+      for(var i=0;i<commodity_list.length;i++){
+        gov.commodities[commodity_list[i]] = 500
+      }
+      gov.commodities['cash'] = 10000000
+      gov.save(function(err,team){
+        if(err){
+          console.log(err);
+        }
+        console.log("Government account created");
+      })
+    }else{
+      console.log("Government already Created");
+    }
+  }
+})
 module.exports = app;

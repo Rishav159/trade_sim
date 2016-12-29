@@ -36,9 +36,9 @@ router.get('/leaderboards',auth,function(req,res,next){
   var render_data = {}
   render_data.commodity_list = commodity_list;
   render_data.base_prices = base_prices;
-  if(req.session.teamid == 'admin'){
+  if(req.session.teamid == 'government'){
     render_data.team = {}
-    render_data.team._id = 'Administrator'
+    render_data.team._id = 'Government'
     Team.find().sort([['sets',-1],['net_worth', -1]]).exec(function(err,teams){
       if(err){
         console.log(err);
