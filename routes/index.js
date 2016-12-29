@@ -39,7 +39,7 @@ router.get('/leaderboards',auth,function(req,res,next){
   if(req.session.teamid == 'government'){
     render_data.team = {}
     render_data.team._id = 'Government'
-    Team.find().sort([['sets',-1],['net_worth', -1]]).exec(function(err,teams){
+    Team.find({_id : {$ne : 'government'}}).sort([['sets',-1],['net_worth', -1]]).exec(function(err,teams){
       if(err){
         console.log(err);
         res.send(err)
