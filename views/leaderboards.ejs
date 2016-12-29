@@ -117,7 +117,7 @@ Array.prototype.maxid = function(comparer) {
                                           <tr>
                                             <td><%=i+1%></td>
                                             <td><%=curr_team._id%></td>
-                                            <td><%=curr_team.sets.max()%> ( Set <%=curr_team.sets.maxid()%>)</td>
+                                            <td><%=curr_team.sets.max()%> ( Set <%=curr_team.sets.maxid() +1%>)</td>
                                             <td><%=curr_team.net_worth%></td>
                                           </tr>
                                         <%}}%>
