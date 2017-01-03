@@ -20,12 +20,14 @@
                   <p>New Proposal</p>
               </a>
           </li>
+          <% if(team._id!=='government'){%>
             <li>
                 <a href="/dashboard">
                     <i class="pe-7s-graph"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
+
             <li>
                 <a href="/proposal">
                     <i class="pe-7s-user"></i>
@@ -38,6 +40,7 @@
                     <p>Sets</p>
                 </a>
             </li>
+            <%}%>
             <li>
                 <a href="/logs">
                     <i class="pe-7s-copy-file"></i>
@@ -49,6 +52,12 @@
                   <a href="/leaderboards">
                       <i class="pe-7s-copy-file"></i>
                       <p>Leaderboards</p>
+                  </a>
+              </li>
+              <li>
+                  <a href="/bird_eye">
+                      <i class="pe-7s-copy-file"></i>
+                      <p>Bird's Eye View</p>
                   </a>
               </li>
               <%}%>

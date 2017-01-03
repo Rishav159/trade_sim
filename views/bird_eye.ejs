@@ -5,7 +5,7 @@
 	<link rel="icon" type="image/png" href="../assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Trade Simulator Leaderboards</title>
+	<title>Trade Simulator Bird's Eye View</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -29,7 +29,7 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="../assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
-
+<link href="../assets/css/datatables.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -77,7 +77,7 @@ Array.prototype.maxid = function(comparer) {
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/leaderboards">Leaderboards</a>
+                    <a class="navbar-brand" href="/bird_eye">Bird's Eye View</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -95,35 +95,87 @@ Array.prototype.maxid = function(comparer) {
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-										<div class="col-md-6">
+										<div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Hall Of Fame</h4>
+                                <h4 class="title">All Players</h4>
                             </div>
                             <div class="content">
                                 <div class="row">
 																	<div class="col-md-12">
-																		<table class="table table-hover table-striped">
+																		<table class="table table-hover table-striped" id='datatable1'>
 																			<thead>
-                                        <th>Rank</th>
-																				<th>Team</th>
+                                        <th>Team</th>
 																				<th>Sets</th>
-                                        <th>Net Worth</th>
+																				<% for(var i=0;i<commodity_list.length;i++){
+                                          commodity = commodity_list[i]; %>
+                                          <th><%=commodity.toUpperCase()%></th>
+                                        <% } %>
+                                          <th>Net Worth</th>
 																			</thead>
 																			<tbody>
                                         <% for(var i=0;i<teams.length;i++){
                                           curr_team = teams[i];
                                           if(curr_team._id != 'government'){%>
                                           <tr>
-                                            <td><%=i+1%></td>
                                             <td><%=curr_team._id%></td>
                                             <td><%=curr_team.sets.max()%> ( Set <%=curr_team.sets.maxid() +1%>)</td>
-                                            <td><%=curr_team.net_worth%></td>
+                                            <% for(var j=0;j<commodity_list.length;j++){
+                                              commodity = commodity_list[j]; %>
+                                              <td><%=curr_team.commodities[commodity]%></td>
+                                            <% } %>
+                                              <td><%=curr_team['net_worth']%></td>
                                           </tr>
                                         <%}}%>
 																			</tbody>
 																		</table>
 																	</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">All Trade Logs</h4>
+                            </div>
+                            <div class="content">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <table class="table table-hover table-striped" id='datatable2'>
+                                      <thead>
+                                        <th>From </th>
+                                        <th>Commodities</th>
+                                        <th>To </th>
+                                        <th>Commodities</th>
+                                      </thead>
+                                      <tbody>
+                                        <% for(var i=0;i<proposals.length;i++){
+                                          curr_proposal = proposals[i];%>
+                                          <tr>
+                                            <td><%=curr_proposal.by%></td>
+                                            <td>
+                                              <% for(var j=0;j<commodity_list.length;j++){
+                                                commodity = commodity_list[j];
+                                                if(curr_proposal.give_commodities[commodity]>0){%>
+                                                  <%=commodity.toUpperCase()%> : <%=curr_proposal.give_commodities[commodity]%>
+                                              <%}}%>
+                                            </td>
+                                            <td><%=curr_proposal.to%></td>
+                                            <td>
+                                              <% for(var j=0;j<commodity_list.length;j++){
+                                                commodity = commodity_list[j];
+                                                if(curr_proposal.want_commodities[commodity]>0){%>
+                                                  <%=commodity.toUpperCase()%> : <%=curr_proposal.want_commodities[commodity]%>
+                                              <%}}%>
+                                            </td>
+                                          </tr>
+                                        <%}%>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                             </div>
                         </div>
@@ -158,6 +210,7 @@ Array.prototype.maxid = function(comparer) {
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 	<script src="../assets/js/light-bootstrap-dashboard.js"></script>
+  <script src="../assets/js/datatables.js"></script>
 
 	<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 	<script src="../assets/js/demo.js"></script>
@@ -193,7 +246,9 @@ Array.prototype.maxid = function(comparer) {
 						timer: 4000
 				});
 		}
-	})
+    $('#datatable1').DataTable({});
+    $('#datatable2').DataTable({});
+	});
 	</script>
 </body>
 </html>

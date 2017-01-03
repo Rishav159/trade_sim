@@ -38,14 +38,44 @@ router.get('/leaderboards',auth,function(req,res,next){
   render_data.base_prices = base_prices;
   if(req.session.teamid == 'government'){
     render_data.team = {}
-    render_data.team._id = 'Government'
+    render_data.team._id = 'government'
     Team.find({_id : {$ne : 'government'}}).sort([['sets',-1],['net_worth', -1]]).exec(function(err,teams){
       if(err){
         console.log(err);
         res.send(err)
       }else{
         render_data.teams = teams
+        render_data.team = {}
+        render_data.team._id = req.session.teamid
         res.render('leaderboards',render_data)
+      }
+    });
+  }else{
+    res.status(403).send("Access Denied")
+  }
+})
+router.get('/bird_eye',auth,function(req,res,next){
+  var render_data = {}
+  render_data.commodity_list = commodity_list;
+  render_data.base_prices = base_prices;
+  if(req.session.teamid == 'government'){
+    render_data.team = {}
+    render_data.team._id = 'government'
+    Team.find({_id : {$ne : 'government'}}).sort([['sets',-1],['net_worth', -1]]).exec(function(err,teams){
+      if(err){
+        console.log(err);
+        res.send(err)
+      }else{
+        render_data.teams=teams
+        Proposal.find({status:"Accepted"},function(err,proposals){
+          if(err){
+            console.log(err);
+            res.send(err)
+          }else{
+            render_data.proposals = proposals
+            res.render('bird_eye',render_data)
+          }
+        });
       }
     });
   }else{
