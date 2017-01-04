@@ -9,6 +9,16 @@ var mongoose = require('mongoose');
 var jsonfile = require('jsonfile')
 var timer = jsonfile.readFileSync('./timer/timer.json');
 /* GET home page. */
+var checkTimer = function(req,res,next){
+  end_time = timer.end_time
+  now = new Date()
+  remaining = Date.parse(end_time) - Date.parse(now);
+  if(remaining<=0){
+    res.redirect('/dashboard?error=true&msg='+'Timer Expired')
+  }else{
+    next()
+  }
+}
 var auth  = function(req,res,next){
   if(req.session && req.session.teamid){
     next()
@@ -104,7 +114,7 @@ var validate_commodity = function(commodities){
     return true
   }
 }
-router.post('/create',auth, function(req, res, next) {
+router.post('/create',auth, checkTimer,function(req, res, next) {
   if(!req.body.to){
     res.redirect('/proposal/create?error=true&msg='+'Not Enough Information Given')
   }
@@ -138,7 +148,7 @@ router.post('/create',auth, function(req, res, next) {
   });
 });
 
-router.get('/:proposal_id/accept',auth,function(req,res,next){
+router.get('/:proposal_id/accept',auth,checkTimer,function(req,res,next){
   Team.findById(req.session.teamid,function(err,to_team){
     if(err){
       console.log(err);
@@ -207,7 +217,7 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
   });
 });
 
-router.get('/:proposal_id/reject',function(req,res,next){
+router.get('/:proposal_id/reject',checkTimer,function(req,res,next){
   Team.findById(req.session.teamid,function(err,to_team){
     if(err){
       console.log(err);

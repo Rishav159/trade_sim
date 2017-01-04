@@ -8,6 +8,16 @@ var sets = require('../models/sets')
 var jsonfile = require('jsonfile')
 var timer = jsonfile.readFileSync('./timer/timer.json');
 /* GET home page. */
+var checkTimer = function(req,res,next){
+  end_time = timer.end_time
+  now = new Date()
+  remaining = Date.parse(end_time) - Date.parse(now);
+  if(remaining<=0){
+    res.redirect('/dashboard?error=true&msg='+'Timer Expired')
+  }else{
+    next()
+  }
+}
 var auth  = function(req,res,next){
   if(req.session && req.session.teamid){
     next()
@@ -42,7 +52,7 @@ router.get('/', auth,function(req, res, next) {
   });
 });
 
-router.get('/:id/submit',auth,function(req,res,next){
+router.get('/:id/submit',auth,checkTimer,function(req,res,next){
   Team.findById(req.session.teamid,function(err,team){
     if(err){
       console.log(err);

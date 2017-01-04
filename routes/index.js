@@ -12,7 +12,21 @@ var auth  = function(req,res,next){
   if(req.session && req.session.teamid){
     next()
   }else{
-    res.redirect('/team/login')
+    if(req.session.teamid=='government'){
+      next()
+    }else{
+      res.redirect('/team/login')
+    }
+  }
+}
+var checkTimer = function(req,res,next){
+  end_time = timer.end_time
+  now = new Date()
+  remaining = Date.parse(end_time) - Date.parse(now);
+  if(remaining<=0){
+    res.redirect('/dashboard?error=true&msg='+'Timer Expired')
+  }else{
+    next()
   }
 }
 router.get('/', function(req, res, next) {

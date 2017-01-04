@@ -7,6 +7,16 @@ var commodity_list = require('../models/commodity').list
 var jsonfile = require('jsonfile')
 var timer = jsonfile.readFileSync('./timer/timer.json');
 /* GET users listing. */
+var checkTimer = function(req,res,next){
+  end_time = timer.end_time
+  now = new Date()
+  remaining = Date.parse(end_time) - Date.parse(now);
+  if(remaining<=0){
+    res.redirect('/dashboard?error=true&msg='+'Timer Expired')
+  }else{
+    next()
+  }
+}
 var auth  = function(req,res,next){
   if(req.session && req.session.teamid){
     next()
