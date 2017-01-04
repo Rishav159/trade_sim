@@ -5,9 +5,10 @@ var base_prices = require('../models/commodity').base_prices
 var get_net_worth = require('../models/commodity').get_net_worth
 var Team = require('../models/team')
 var sets = require('../models/sets')
+var jsonfile = require('jsonfile')
+var timer = jsonfile.readFileSync('./timer/timer.json');
 /* GET home page. */
 var auth  = function(req,res,next){
-  console.log(req.session.teamid);
   if(req.session && req.session.teamid){
     next()
   }else{
@@ -35,6 +36,7 @@ router.get('/', auth,function(req, res, next) {
     }else{
       render_data.team = team
       render_data.sets = sets
+      render_data.timer = timer
       res.render('sets',render_data)
     }
   });

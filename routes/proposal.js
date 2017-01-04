@@ -6,6 +6,8 @@ var commodity_list = require('../models/commodity').list
 var base_prices = require('../models/commodity').base_prices
 var get_net_worth = require('../models/commodity').get_net_worth
 var mongoose = require('mongoose');
+var jsonfile = require('jsonfile')
+var timer = jsonfile.readFileSync('./timer/timer.json');
 /* GET home page. */
 var auth  = function(req,res,next){
   if(req.session && req.session.teamid){
@@ -30,6 +32,7 @@ router.get('/',auth,function(req,res,next){
           res.redirect('/proposal?error=true&msg='+'Unexpected Error')
         }else{
           render_data.proposals = proposals
+          render_data.timer = timer
           res.render('proposal',render_data)
         }
       });
@@ -48,6 +51,7 @@ router.get('/create',auth,function(req,res,next){
       render_data.team = {}
       render_data.team._id = req.session.teamid
       render_data.commodity_list = commodity_list
+      render_data.timer = timer
       res.render('new_proposal',render_data)
     }
   })
@@ -149,7 +153,6 @@ router.get('/:proposal_id/accept',auth,function(req,res,next){
         res.redirect('/proposal?error=true&msg='+'This Proposal does not exist !')
       }else{
         if(proposal.to != req.session.teamid){
-          console.log(proposal.to);
           res.redirect('/proposal?error=true&msg='+'This Proposal is not for you !')
         }else{
           Team.findById(proposal.by,function(err,from_team){

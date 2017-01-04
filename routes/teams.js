@@ -4,9 +4,10 @@ var Team = require('../models/team')
 
 var path = require('path')
 var commodity_list = require('../models/commodity').list
+var jsonfile = require('jsonfile')
+var timer = jsonfile.readFileSync('./timer/timer.json');
 /* GET users listing. */
 var auth  = function(req,res,next){
-  console.log(req.session.teamid);
   if(req.session && req.session.teamid){
     next()
   }else{
@@ -63,11 +64,9 @@ router.post('/signup',function(req,res,next){
 
 
 router.get('/login',function(req,res,next){
-  console.log("Login Page Requested");
 	res.sendFile(path.join(__dirname, '../public/signup.html'));
 });
 router.post('/login',function(req,res){
-	console.log("A team is trying to login");
 	if(!req.body.id || !req.body.password){
 		res.redirect('/team/login?error=true&msg='+'Insufficient Field Values')
 	}else{

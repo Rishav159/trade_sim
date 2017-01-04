@@ -62,6 +62,7 @@
 
         <div class="content">
             <div class="container-fluid">
+							<% if(team._id!='government'){%>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card">
@@ -120,7 +121,87 @@
                         </div>
                     </div>
                 </div>
+								<%}else{%>
+									<div class="row">
+	                    <div class="col-md-4">
+	                        <div class="card">
+	                            <div class="header">
+	                                <h4 class="title">Set New Timer</h4>
 
+	                            </div>
+	                            <div class="content">
+																<form action="/set_timer" method="post">
+																		<div class="row">
+																			<div class="col-md-6">
+																				<div class="form-group">
+																					<label for="text">Timer Text</label>
+																					<input type="text" name="text" value="">
+																				</div>
+																				<div class="form-group">
+																					<label for="minutes">Minutes</label>
+																					<input type="number" name="minutes" value="">
+																				</div>
+																				<div class="form-group">
+																					<label for="seconds">Seconds</label>
+																					<input type="number" name="seconds" value="">
+																				</div>
+																			</div>
+																		</div>
+																		<button type="submit" class="btn btn-info btn-fill pull-left">Send Request</button>
+																		<div class="clearfix"></div>
+																</form>
+
+	                                <div id="commodity_chart" class="ct-chart ct-perfect-fourth" style="display:none"></div>
+	                            </div>
+	                        </div>
+	                    </div>
+
+	                    <div class="col-md-8">
+	                        <div class="card">
+	                            <div class="header">
+																<h4 class="title">Treasury</h4>
+																<p class="category">Current Stock</p>
+	                            </div>
+	                            <div class="content">
+																<table class="table table-hover table-striped">
+																		<thead>
+																			<th>Commodity</th>
+																			<th>Quantity</th>
+																			<th>Base Price</th>
+																			<th>Amount</th>
+																		</thead>
+																		<tbody>
+																		<%var series = [],colist = []
+																		for(var i = 0;i<commodity_list.length;i++){
+																			commodity = commodity_list[i]
+																			series.push(team.commodities[commodity]*base_prices[commodity])
+																			if(commodity!='cash'){%>
+																			<tr>
+																				<td><%= commodity.toUpperCase()%></td>
+																				<td><%= team.commodities[commodity]%></td>
+																				<td><%= base_prices[commodity]%></td>
+																				<td><%= base_prices[commodity]*team.commodities[commodity]%></td>
+																			</tr>
+																		<%}}%>
+																		<tr>
+																			<td></td>
+																			<td></td>
+																			<td></td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td><strong>Cash Available</strong></td>
+																			<td><strong><%= team.commodities['cash']%></strong></td>
+																			<td><strong>Net Worth</strong></td>
+																			<td><strong><%= team.net_worth %></strong></td>
+																		</tr>
+																		</tbody>
+																</table>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+									<%}%>
             </div>
         </div>
 
@@ -202,6 +283,51 @@
 									timer: 4000
 							});
 					}
+					var getTimeRemaining = function(endtime){
+					var now = new Date();
+						var t = Date.parse(endtime) - Date.parse(now);
+						var seconds = Math.floor( (t/1000) % 60 );
+						var minutes = Math.floor( (t/1000/60) % 60 );
+						var hours = Math.floor( (t/(1000*60*60)) % 24 );
+						var days = Math.floor( t/(1000*60*60*24) );
+
+						if(t<=0){
+							return {
+								'total': 0,
+								'days': 0,
+								'hours': 0,
+								'minutes': 0,
+								'seconds': 0
+							};
+						}else{
+							return {
+								'total': t,
+								'days': days,
+								'hours': hours,
+								'minutes': minutes,
+								'seconds': seconds
+							};
+						}
+					}
+					function initializeClock(id, endtime){
+					  var clock = document.getElementById(id);
+					  function updateClock(){
+					    var t = getTimeRemaining(endtime);
+					    clock.innerHTML =
+					                      ('0' + t.hours).slice(-2) + ':' +
+					                      ('0' + t.minutes).slice(-2) + ':' +
+					                     ('0' + t.seconds).slice(-2);
+					    if(t.total<=0){
+					      clearInterval(timeinterval);
+					    }
+					  }
+					  updateClock()
+					  var timeinterval = setInterval(updateClock,1000);
+					}
+					<% if(typeof timer != 'undefined'){ %>
+					  var end = '<%=timer.end_time%>'
+					  initializeClock('time_remaining',end);
+					<%}%>
     	});
 	</script>
 </body>
