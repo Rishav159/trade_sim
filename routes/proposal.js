@@ -13,6 +13,7 @@ var checkTimer = function(req,res,next){
   end_time = timer.end_time
   now = new Date()
   remaining = Date.parse(end_time) - Date.parse(now);
+  console.log(remaining);
   if(remaining<=0){
     res.redirect('/dashboard?error=true&msg='+'Timer Expired')
   }else{

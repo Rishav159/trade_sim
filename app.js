@@ -14,6 +14,8 @@ var sets = require('./routes/sets')
 var app = express();
 var Team = require('./models/team')
 var commodity_list = require('./models/commodity')['list']
+var jsonfile = require('jsonfile')
+var timer = jsonfile.readFileSync('./timer/timer.json');
 mongoose.connect('mongodb://localhost/trade_sim');
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
